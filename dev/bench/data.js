@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1669718555284,
+  "lastUpdate": 1669718567612,
   "entries": {
     "Rust Benchmark": [
       {
@@ -41077,6 +41077,42 @@ window.BENCHMARK_DATA = {
             "value": 47.1507064918677,
             "unit": "ns",
             "range": "± 0.010433637757090112"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "k.trzesniewski@gmail.com",
+            "name": "Chris Trzesniewski",
+            "username": "ktrz"
+          },
+          "committer": {
+            "email": "k.trzesniewski@gmail.com",
+            "name": "Chris Trzesniewski",
+            "username": "ktrz"
+          },
+          "distinct": true,
+          "id": "b2887b657da81fdbbd1b8f8653099da5b246e259",
+          "message": "Update changelog for v1.15.0",
+          "timestamp": "2022-11-03T16:09:08+01:00",
+          "tree_id": "44376a4cfbda3e5d68c4b22452d70c37ec951616",
+          "url": "https://github.com/spitfire-audio/github-action-benchmark/commit/b2887b657da81fdbbd1b8f8653099da5b246e259"
+        },
+        "date": 1669718565167,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "Sample.Benchmarks.Fib10",
+            "value": 24.973903289208046,
+            "unit": "ns",
+            "range": "± 0.07511728487928199"
+          },
+          {
+            "name": "Sample.Benchmarks.Fib20",
+            "value": 47.14571346044541,
+            "unit": "ns",
+            "range": "± 0.004506565911041418"
           }
         ]
       }
