@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1669718529445,
+  "lastUpdate": 1669718553894,
   "entries": {
     "Rust Benchmark": [
       {
@@ -41071,6 +41071,36 @@ window.BENCHMARK_DATA = {
           {
             "name": "org.openjdk.jmh.samples.JMHSample_01_HelloWorld.wellHelloThere",
             "value": 1689130414.496377,
+            "unit": "ops/s",
+            "extra": "iterations: 3\nforks: 1\nthreads: 1"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "k.trzesniewski@gmail.com",
+            "name": "Chris Trzesniewski",
+            "username": "ktrz"
+          },
+          "committer": {
+            "email": "k.trzesniewski@gmail.com",
+            "name": "Chris Trzesniewski",
+            "username": "ktrz"
+          },
+          "distinct": true,
+          "id": "b2887b657da81fdbbd1b8f8653099da5b246e259",
+          "message": "Update changelog for v1.15.0",
+          "timestamp": "2022-11-03T16:09:08+01:00",
+          "tree_id": "44376a4cfbda3e5d68c4b22452d70c37ec951616",
+          "url": "https://github.com/spitfire-audio/github-action-benchmark/commit/b2887b657da81fdbbd1b8f8653099da5b246e259"
+        },
+        "date": 1669718550444,
+        "tool": "jmh",
+        "benches": [
+          {
+            "name": "org.openjdk.jmh.samples.JMHSample_01_HelloWorld.wellHelloThere",
+            "value": 1882893871.0026026,
             "unit": "ops/s",
             "extra": "iterations: 3\nforks: 1\nthreads: 1"
           }
