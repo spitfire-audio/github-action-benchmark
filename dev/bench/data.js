@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1669718522865,
+  "lastUpdate": 1669718525909,
   "entries": {
     "Rust Benchmark": [
       {
@@ -39557,6 +39557,44 @@ window.BENCHMARK_DATA = {
             "name": "Fibonacci 20",
             "value": 23.257,
             "range": "± 281",
+            "unit": "us",
+            "extra": "100 samples\n2 iterations"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "k.trzesniewski@gmail.com",
+            "name": "Chris Trzesniewski",
+            "username": "ktrz"
+          },
+          "committer": {
+            "email": "k.trzesniewski@gmail.com",
+            "name": "Chris Trzesniewski",
+            "username": "ktrz"
+          },
+          "distinct": true,
+          "id": "b2887b657da81fdbbd1b8f8653099da5b246e259",
+          "message": "Update changelog for v1.15.0",
+          "timestamp": "2022-11-03T16:09:08+01:00",
+          "tree_id": "44376a4cfbda3e5d68c4b22452d70c37ec951616",
+          "url": "https://github.com/spitfire-audio/github-action-benchmark/commit/b2887b657da81fdbbd1b8f8653099da5b246e259"
+        },
+        "date": 1669718523025,
+        "tool": "catch2",
+        "benches": [
+          {
+            "name": "Fibonacci 10",
+            "value": 164,
+            "range": "± 2",
+            "unit": "ns",
+            "extra": "100 samples\n182 iterations"
+          },
+          {
+            "name": "Fibonacci 20",
+            "value": 23.242,
+            "range": "± 248",
             "unit": "us",
             "extra": "100 samples\n2 iterations"
           }
