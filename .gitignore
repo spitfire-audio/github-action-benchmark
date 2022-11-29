@@ -11,3 +11,5 @@
 /.idea
 target/
 jmh-result.json
+dist/src
+dist/scripts
