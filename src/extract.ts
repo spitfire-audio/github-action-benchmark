@@ -526,7 +526,7 @@ function extractCatch2Result(output: string): BenchmarkResult[] {
             );
         }
 
-        const range = '± ' + stdDev[1].trim();
+        const range = '± ' + stdDev[1].trim() + " " + stdDev[2];
 
         // Skip empty line
         const [emptyLine, emptyLineNum] = nextLine();

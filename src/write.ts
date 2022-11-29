@@ -93,6 +93,26 @@ interface Alert {
     ratio: number;
 }
 
+function getMultiplier(unit: string): number {
+    switch (unit) {
+        case 'ns':
+            return 1;
+        case 'us':
+            return 1000;
+        case 'ms':
+            return 1000 * 1000;
+        case 's':
+            return 1000 * 1000 * 1000;
+    }
+}
+
+function getValue(bench: BenchmarkResult): number {
+    if (!bench.unit)
+        return bench.value;
+
+    return bench.value * getMultiplier(bench.unit);
+}
+
 function findAlerts(curSuite: Benchmark, prevSuite: Benchmark, threshold: number): Alert[] {
     core.debug(`Comparing current:${curSuite.commit.id} and prev:${prevSuite.commit.id} for alert`);
 
@@ -105,12 +125,12 @@ function findAlerts(curSuite: Benchmark, prevSuite: Benchmark, threshold: number
         }
 
         const ratio = biggerIsBetter(curSuite.tool)
-            ? prev.value / current.value // e.g. current=100, prev=200
-            : current.value / prev.value; // e.g. current=200, prev=100
+            ? getValue(prev) / getValue(current) // e.g. current=100, prev=200
+            : getValue(current) / getValue(prev); // e.g. current=200, prev=100
 
         if (ratio > threshold) {
             core.warning(
-                `Performance alert! Previous value was ${prev.value} and current value is ${current.value}.` +
+                `Performance alert! Previous value was ${prev.value} ${prev.unit} and current value is ${current.value} ${current.unit}.` +
                     ` It is ${ratio}x worse than previous exceeding a ratio threshold ${threshold}`,
             );
             alerts.push({ current, prev, ratio });
@@ -177,8 +197,8 @@ function buildComment(benchName: string, curSuite: Benchmark, prevSuite: Benchma
 
         if (prev) {
             const ratio = biggerIsBetter(curSuite.tool)
-                ? prev.value / current.value // e.g. current=100, prev=200
-                : current.value / prev.value;
+                ? getValue(prev) / getValue(current) // e.g. current=100, prev=200
+                : getValue(current) / getValue(prev); // e.g. current=200, prev=100
 
             line = `| \`${current.name}\` | ${strVal(current)} | ${strVal(prev)} | \`${floatStr(ratio)}\` |`;
         } else {
@@ -573,8 +593,8 @@ export async function writeSummary(bench: Benchmark, config: Config): Promise<vo
 
         if (previousBench) {
             const ratio = biggerIsBetter(config.tool)
-                ? previousBench.value / bench.value
-                : bench.value / previousBench.value;
+                        ? getValue(previousBench) / getValue(bench) // e.g. current=100, prev=200
+                        : getValue(bench) / getValue(previousBench); // e.g. current=200, prev=100
 
             return [
                 {
