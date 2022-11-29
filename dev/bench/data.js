@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1669718553894,
+  "lastUpdate": 1669718555284,
   "entries": {
     "Rust Benchmark": [
       {
@@ -36517,6 +36517,42 @@ window.BENCHMARK_DATA = {
             "value": 24205.748141745487,
             "unit": "ns/iter",
             "extra": "iterations: 28925\ncpu: 24188.038029386338 ns\nthreads: 1"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "k.trzesniewski@gmail.com",
+            "name": "Chris Trzesniewski",
+            "username": "ktrz"
+          },
+          "committer": {
+            "email": "k.trzesniewski@gmail.com",
+            "name": "Chris Trzesniewski",
+            "username": "ktrz"
+          },
+          "distinct": true,
+          "id": "b2887b657da81fdbbd1b8f8653099da5b246e259",
+          "message": "Update changelog for v1.15.0",
+          "timestamp": "2022-11-03T16:09:08+01:00",
+          "tree_id": "44376a4cfbda3e5d68c4b22452d70c37ec951616",
+          "url": "https://github.com/spitfire-audio/github-action-benchmark/commit/b2887b657da81fdbbd1b8f8653099da5b246e259"
+        },
+        "date": 1669718552081,
+        "tool": "googlecpp",
+        "benches": [
+          {
+            "name": "fib_10",
+            "value": 179.42079814497268,
+            "unit": "ns/iter",
+            "extra": "iterations: 3900319\ncpu: 179.37891746803274 ns\nthreads: 1"
+          },
+          {
+            "name": "fib_20",
+            "value": 24162.79988273164,
+            "unit": "ns/iter",
+            "extra": "iterations: 28993\ncpu: 24161.159590245916 ns\nthreads: 1"
           }
         ]
       }
