@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1667488458982,
+  "lastUpdate": 1669718512036,
   "entries": {
     "Rust Benchmark": [
       {
@@ -31545,6 +31545,44 @@ window.BENCHMARK_DATA = {
             "extra": "mean: 2.9188453104474483 msec\nrounds: 335"
           }
         ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "k.trzesniewski@gmail.com",
+            "name": "Chris Trzesniewski",
+            "username": "ktrz"
+          },
+          "committer": {
+            "email": "k.trzesniewski@gmail.com",
+            "name": "Chris Trzesniewski",
+            "username": "ktrz"
+          },
+          "distinct": true,
+          "id": "b2887b657da81fdbbd1b8f8653099da5b246e259",
+          "message": "Update changelog for v1.15.0",
+          "timestamp": "2022-11-03T16:09:08+01:00",
+          "tree_id": "44376a4cfbda3e5d68c4b22452d70c37ec951616",
+          "url": "https://github.com/spitfire-audio/github-action-benchmark/commit/b2887b657da81fdbbd1b8f8653099da5b246e259"
+        },
+        "date": 1669718508454,
+        "tool": "pytest",
+        "benches": [
+          {
+            "name": "bench.py::test_fib_10",
+            "value": 42953.18291994734,
+            "unit": "iter/sec",
+            "range": "stddev: 0.00004931208852937706",
+            "extra": "mean: 23.281161767772108 usec\nrounds: 30210"
+          },
+          {
+            "name": "bench.py::test_fib_20",
+            "value": 366.2370429767984,
+            "unit": "iter/sec",
+            "range": "stddev: 0.0003996643698373589",
+            "extra": "mean: 2.7304720239982694 msec\nrounds: 375"
+          }
+        ]
       }
     ],
     "C++ Benchmark": [
@@ -40856,5 +40894,5 @@ window.BENCHMARK_DATA = {
       }
     ]
   },
-  "repoUrl": "https://github.com/benchmark-action/github-action-benchmark"
+  "repoUrl": "https://github.com/spitfire-audio/github-action-benchmark"
 }
