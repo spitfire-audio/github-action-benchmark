@@ -88,6 +88,10 @@ describe('extractResult()', function () {
             file: 'catch2_output_v3.txt',
         },
         {
+            tool: 'catch2',
+            file: 'catch2_output.xml',
+        },
+        {
             tool: 'go',
             file: 'go_output.txt',
         },
