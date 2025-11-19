@@ -168,10 +168,10 @@ interface Catch2XML {
     Catch2TestRun: Catch2TestRun
 }
 
-function parseBenchmark(benchmark: Catch2Benchmark): BenchmarkResult
+function parseBenchmark(benchmark: Catch2Benchmark, namePrefix: string): BenchmarkResult
 {
     return {
-        name: benchmark.name,
+        name: "Test Case: " + namePrefix + " — Benchmark: " + benchmark.name,
         value: benchmark.mean.value,
         range: '± ' + benchmark.standardDeviation.value,
         unit: 'ns',
@@ -190,13 +190,17 @@ function extractCatch2ResultXML(output: string): BenchmarkResult[] {
     if (Array.isArray(testCases))
     {
         return testCases.map((testCase) => {
-            return testCase.BenchmarkResults.map(parseBenchmark);
+            return testCase.BenchmarkResults.map(
+                (benchmark) => parseBenchmark(benchmark, testCase.name)
+            );
         }).reduce((prev, cur) => {
             return [...prev, ...cur];
         }, []);
     }
 
-    return testCases.BenchmarkResults.map(parseBenchmark);
+    return testCases.BenchmarkResults.map(
+        (benchmark) => parseBenchmark(benchmark, testCases.name)
+    );
 }
 
 export default function extractCatch2Result(output: string, file_suffix: string): BenchmarkResult[]
