@@ -98,29 +98,43 @@ function parseBenchmark(benchmark, namePrefix) {
         extra: `${benchmark.samples} samples\n${benchmark.iterations} iterations`,
     };
 }
+function toArray(obj) {
+    return Array.isArray(obj) ? obj : [obj];
+}
+function getBenchmarkArrayFromTestCase(obj) {
+    let rv = [];
+    if (typeof obj.BenchmarkResults !== 'undefined') {
+        rv = obj.BenchmarkResults;
+    }
+    if (typeof obj.Section !== 'undefined') {
+        rv = toArray(obj.Section)
+            .map((obj) => obj.BenchmarkResults)
+            .reduce((accum, curr) => [...toArray(accum), ...toArray(curr)], []);
+    }
+    return toArray(rv);
+}
 function extractCatch2ResultXML(output) {
     const parser = new fast_xml_parser_1.XMLParser({
         ignoreAttributes: false,
         attributeNamePrefix: '',
     });
     const parsedObj = parser.parse(output);
-    const testCases = parsedObj.Catch2TestRun.TestCase;
-    if (Array.isArray(testCases)) {
-        return testCases
-            .map((testCase) => {
-            return testCase.BenchmarkResults.map((benchmark) => parseBenchmark(benchmark, testCase.name));
-        })
-            .reduce((prev, cur) => {
-            return [...prev, ...cur];
-        }, []);
-    }
-    return testCases.BenchmarkResults.map((benchmark) => parseBenchmark(benchmark, testCases.name));
+    return toArray(parsedObj.Catch2TestRun.TestCase)
+        .map((testCase) => {
+        return getBenchmarkArrayFromTestCase(testCase).map((benchmark) => parseBenchmark(benchmark, testCase.name));
+    })
+        .reduce((prev, cur) => {
+        return [...prev, ...cur];
+    }, []);
 }
 function extractCatch2Result(output, fileSuffix) {
+    console.log('Extracting Catch2 results');
     switch (fileSuffix) {
         case '.xml':
+            console.log('Using XML Parser');
             return extractCatch2ResultXML(output);
         default:
+            console.log('Using Text Parser');
             return extractCatch2ResultText(output);
     }
 }

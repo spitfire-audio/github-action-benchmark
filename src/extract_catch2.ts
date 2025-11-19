@@ -130,6 +130,11 @@ interface Outliers {
     highSevere: string;
 }
 
+interface OverallResult {
+    success: string;
+    skips: string;
+}
+
 interface OverallResults {
     successes: string;
     failures: string;
@@ -148,11 +153,18 @@ interface Catch2Benchmark {
     outliers: Outliers;
 }
 
+interface Section {
+    BenchmarkResults: Catch2Benchmark | Catch2Benchmark[]; // eslint-disable-line @typescript-eslint/naming-convention
+    OverallResults: OverallResults; // eslint-disable-line @typescript-eslint/naming-convention
+}
+
 interface TestCase {
     name: string;
     filename: string;
     line: string;
-    BenchmarkResults: Catch2Benchmark[]; // eslint-disable-line @typescript-eslint/naming-convention
+    BenchmarkResults: Catch2Benchmark | Catch2Benchmark[] | undefined; // eslint-disable-line @typescript-eslint/naming-convention
+    Section: Section | Section[] | undefined; // eslint-disable-line @typescript-eslint/naming-convention
+    OverallResult: OverallResult | undefined; // eslint-disable-line @typescript-eslint/naming-convention
 }
 
 interface Catch2TestRun {
@@ -177,6 +189,24 @@ function parseBenchmark(benchmark: Catch2Benchmark, namePrefix: string): Benchma
     };
 }
 
+function toArray<T>(obj: T | T[]): T[] {
+    return Array.isArray(obj) ? obj : [obj];
+}
+
+function getBenchmarkArrayFromTestCase(obj: TestCase): Catch2Benchmark[] {
+    let rv: Catch2Benchmark | Catch2Benchmark[] = [];
+    if (typeof obj.BenchmarkResults !== 'undefined') {
+        rv = obj.BenchmarkResults;
+    }
+    if (typeof obj.Section !== 'undefined') {
+        rv = toArray(obj.Section)
+            .map((obj) => obj.BenchmarkResults)
+            .reduce((accum, curr) => [...toArray(accum), ...toArray(curr)], []);
+    }
+
+    return toArray(rv);
+}
+
 function extractCatch2ResultXML(output: string): BenchmarkResult[] {
     const parser = new XMLParser({
         ignoreAttributes: false,
@@ -184,25 +214,23 @@ function extractCatch2ResultXML(output: string): BenchmarkResult[] {
     });
     const parsedObj: Catch2XML = parser.parse(output);
 
-    const testCases = parsedObj.Catch2TestRun.TestCase;
-    if (Array.isArray(testCases)) {
-        return testCases
-            .map((testCase) => {
-                return testCase.BenchmarkResults.map((benchmark) => parseBenchmark(benchmark, testCase.name));
-            })
-            .reduce((prev, cur) => {
-                return [...prev, ...cur];
-            }, []);
-    }
-
-    return testCases.BenchmarkResults.map((benchmark) => parseBenchmark(benchmark, testCases.name));
+    return toArray(parsedObj.Catch2TestRun.TestCase)
+        .map((testCase) => {
+            return getBenchmarkArrayFromTestCase(testCase).map((benchmark) => parseBenchmark(benchmark, testCase.name));
+        })
+        .reduce((prev, cur) => {
+            return [...prev, ...cur];
+        }, []);
 }
 
 export default function extractCatch2Result(output: string, fileSuffix: string): BenchmarkResult[] {
+    console.log('Extracting Catch2 results');
     switch (fileSuffix) {
         case '.xml':
+            console.log('Using XML Parser');
             return extractCatch2ResultXML(output);
         default:
+            console.log('Using Text Parser');
             return extractCatch2ResultText(output);
     }
 }
