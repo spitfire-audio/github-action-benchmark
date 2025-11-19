@@ -116,96 +116,90 @@ function extractCatch2ResultText(output: string): BenchmarkResult[] {
 }
 
 interface Result {
-    value: number
-    lowerBound: number
-    upperBound: number
-    ci: number  // ci == "confidence interval"
+    value: string;
+    lowerBound: string;
+    upperBound: string;
+    ci: string; // ci == "confidence interval"
 }
 
 interface Outliers {
-    variance: number
-    lowMild: number
-    lowSevere: number
-    highMild: number
-    highSevere: number
+    variance: string;
+    lowMild: string;
+    lowSevere: string;
+    highMild: string;
+    highSevere: string;
 }
 
 interface OverallResults {
-    successes: number
-    failures: number
-    expectedFailures: number
-    skips: number
+    successes: string;
+    failures: string;
+    expectedFailures: string;
+    skips: string;
 }
 
-interface Catch2Benchmark
-{
-    name: string
-    samples: number
-    iterations: number
-    clockResolution: number
-    estimatedDuration: number
-    mean: Result
-    standardDeviation: Result
-    outliers: Outliers
+interface Catch2Benchmark {
+    name: string;
+    samples: string;
+    iterations: string;
+    clockResolution: string;
+    estimatedDuration: string;
+    mean: Result;
+    standardDeviation: Result;
+    outliers: Outliers;
 }
 
 interface TestCase {
-    name: string
-    filename: string
-    line: number
-    BenchmarkResults: Catch2Benchmark[]
+    name: string;
+    filename: string;
+    line: string;
+    BenchmarkResults: Catch2Benchmark[]; // eslint-disable-line @typescript-eslint/naming-convention
 }
 
 interface Catch2TestRun {
-    name: string
-    TestCase: TestCase | TestCase[]
-    OverallResults: OverallResults
-    OverallResultsCases: OverallResults
+    name: string;
+    TestCase: TestCase | TestCase[]; // eslint-disable-line @typescript-eslint/naming-convention
+    OverallResults: OverallResults; // eslint-disable-line @typescript-eslint/naming-convention
+    OverallResultsCases: OverallResults; // eslint-disable-line @typescript-eslint/naming-convention
 }
 
 interface Catch2XML {
-    xml: string
-    Catch2TestRun: Catch2TestRun
+    xml: string;
+    Catch2TestRun: Catch2TestRun; // eslint-disable-line @typescript-eslint/naming-convention
 }
 
-function parseBenchmark(benchmark: Catch2Benchmark, namePrefix: string): BenchmarkResult
-{
+function parseBenchmark(benchmark: Catch2Benchmark, namePrefix: string): BenchmarkResult {
     return {
-        name: "Test Case: " + namePrefix + " — Benchmark: " + benchmark.name,
-        value: benchmark.mean.value,
+        name: 'Test Case: ' + namePrefix + ' — Benchmark: ' + benchmark.name,
+        value: parseFloat(benchmark.mean.value),
         range: '± ' + benchmark.standardDeviation.value,
         unit: 'ns',
         extra: `${benchmark.samples} samples\n${benchmark.iterations} iterations`,
-    }
+    };
 }
 
 function extractCatch2ResultXML(output: string): BenchmarkResult[] {
     const parser = new XMLParser({
         ignoreAttributes: false,
-        attributeNamePrefix: ""
+        attributeNamePrefix: '',
     });
     const parsedObj: Catch2XML = parser.parse(output);
 
     const testCases = parsedObj.Catch2TestRun.TestCase;
-    if (Array.isArray(testCases))
-    {
-        return testCases.map((testCase) => {
-            return testCase.BenchmarkResults.map(
-                (benchmark) => parseBenchmark(benchmark, testCase.name)
-            );
-        }).reduce((prev, cur) => {
-            return [...prev, ...cur];
-        }, []);
+    if (Array.isArray(testCases)) {
+        return testCases
+            .map((testCase) => {
+                return testCase.BenchmarkResults.map((benchmark) => parseBenchmark(benchmark, testCase.name));
+            })
+            .reduce((prev, cur) => {
+                return [...prev, ...cur];
+            }, []);
     }
 
-    return testCases.BenchmarkResults.map(
-        (benchmark) => parseBenchmark(benchmark, testCases.name)
-    );
+    return testCases.BenchmarkResults.map((benchmark) => parseBenchmark(benchmark, testCases.name));
 }
 
-export default function extractCatch2Result(output: string, file_suffix: string): BenchmarkResult[]
-{
-    switch (file_suffix){
+export default function extractCatch2Result(output: string, fileSuffix: string): BenchmarkResult[] {
+    switch (fileSuffix) {
         case '.xml':
             return extractCatch2ResultXML(output);
         default:

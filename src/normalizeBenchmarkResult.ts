@@ -1,4 +1,4 @@
-import { BenchmarkResult } from './extract';
+import { BenchmarkResult } from './benchmark_result';
 import { normalizeValueByUnit } from './normalizeValueByUnit';
 import { extractRangeInfo } from './extractRangeInfo';
 

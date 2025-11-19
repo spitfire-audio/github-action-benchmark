@@ -301,7 +301,7 @@ exports[`extractResult() extracts benchmark output from catch2 - catch2_output.x
       "name": "Test Case: Fibonacci — Benchmark: Fibonacci 10",
       "range": "± 10.294",
       "unit": "ns",
-      "value": "154.037",
+      "value": 154.037,
     },
     {
       "extra": "100 samples
@@ -309,7 +309,7 @@ exports[`extractResult() extracts benchmark output from catch2 - catch2_output.x
       "name": "Test Case: Fibonacci — Benchmark: Fibonacci 20",
       "range": "± 2476.21",
       "unit": "ns",
-      "value": "20100.5",
+      "value": 20100.5,
     },
   ],
   "commit": {

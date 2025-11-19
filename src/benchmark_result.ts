@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const BenchmarkResult = z.object({
     name: z.coerce.string(),
     value: z.coerce.number(),
@@ -10,4 +11,5 @@ export const BenchmarkResult = z.object({
 
 export type BenchmarkResult = z.infer<typeof BenchmarkResult>;
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const BenchmarkResults = z.array(BenchmarkResult);
