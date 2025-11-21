@@ -8,4 +8,9 @@ TEST_CASE("Fibonacci") {
   BENCHMARK("Fibonacci 10") { return fib(10); };
 
   BENCHMARK("Fibonacci 20") { return fib(20); };
+
+  SECTION("Subsection Benchmark")
+  {
+    BENCHMARK("Fibonacci 20") { return fib(30); };
+  }
 }

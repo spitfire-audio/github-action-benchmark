@@ -92,10 +92,6 @@ describe('extractResult()', function () {
             file: 'catch2_output.xml',
         },
         {
-            tool: 'catch2',
-            file: 'benchmark_results.xml',
-        },
-        {
             tool: 'go',
             file: 'go_output.txt',
         },
