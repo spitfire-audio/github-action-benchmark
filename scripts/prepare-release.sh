@@ -62,7 +62,6 @@ git pull
 
 # Here comes the flood: clean the repo of all files
 set -e
-git rm -r --cached .  # stop tracking everything
 git clean -fd  # clear all non-tracked files
 rm -rf node_modules  # clear last build dependency installation
 rm -rf dist  # clear last distribution
@@ -76,7 +75,7 @@ mv .release/*.json .
 mv .release/node_modules .
 
 # Add everything for release
-git add action.yml action-types.yml ./dist/src/*.js package.json package-lock.json node_modules
+git add action.yml action-types.yml ./dist/src/**/*.js package.json package-lock.json node_modules
 rm -rf .release  # destroy the ark to leave nothing behind.
 
 set +x
