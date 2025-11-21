@@ -75,7 +75,7 @@ mv .release/*.json .
 mv .release/node_modules .
 
 # Add everything for release
-git add action.yml action-types.yml ./dist/src/**/*.js package.json package-lock.json node_modules
+git add action.yml action-types.yml .dist/src/*.js ./dist/src/**/*.js package.json package-lock.json node_modules
 rm -rf .release  # destroy the ark to leave nothing behind.
 
 set +x
