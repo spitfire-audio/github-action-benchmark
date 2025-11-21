@@ -69,20 +69,21 @@ set -e
 git rm -r --cached .  # stop tracking everything
 git add .release  # temporarily track release
 git clean -fd  # clear all non-tracked files
-git rm -r --cached .release  # stop tracking release
+rm -rf node_modules  # clear last build dependency installation
+rm -rf dist  # clear last distribution
 
 ## Flood is over, all release files can leave the ark
-#mkdir -p dist/src
-#mv .release/action.yml .
-#mv .release/action-types.yml .
-#mv .release/dist/src/ ./dist/
-#mv .release/*.json .
-#mv .release/node_modules .
-#
-## Force-add things here since it's very likely
-#git add -f action.yml action-types.yml ./dist/src/*.js package.json package-lock.json node_modules
+mkdir -p dist/src
+mv .release/action.yml .
+mv .release/action-types.yml .
+mv .release/dist/src/ ./dist/
+mv .release/*.json .
+mv .release/node_modules .
+
+# Force-add things here
+git add -f action.yml action-types.yml ./dist/src/*.js package.json package-lock.json node_modules
 #rm -rf .release
-#set +x
-#
-#echo "Done. Please check 'git diff --cached' to verify changes. If ok, add version tag and push it to remote"
+set +x
+
+echo "Done. Please check 'git diff --cached' to verify changes. If ok, add version tag and push it to remote"
 
