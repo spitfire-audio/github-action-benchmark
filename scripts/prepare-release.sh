@@ -25,8 +25,8 @@ if ! git diff --cached --quiet; then
 fi
 
 branch="$(git symbolic-ref --short HEAD)"
-if [[ "$branch" != "$version" ]]; then
-    echo 'Current branch cannot be not targeted. Please change branches or select a different branch' >&2
+if [[ "$branch" == "$version" ]]; then
+    echo "Current branch $branch cannot be not targeted. Please change target $version or select a different branch" >&2
     exit 1
 fi
 
