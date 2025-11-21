@@ -60,14 +60,9 @@ git restore .
 git checkout "$version"
 git pull
 
-# Add some last-minute stragglers to the ark
-cp -R .git .release/.git
-cp .gitignore .release/
-
 # Here comes the flood: clean the repo of all files
 set -e
 git rm -r --cached .  # stop tracking everything
-git add .release  # temporarily track release
 git clean -fd  # clear all non-tracked files
 rm -rf node_modules  # clear last build dependency installation
 rm -rf dist  # clear last distribution
@@ -80,9 +75,10 @@ mv .release/dist/src/ ./dist/
 mv .release/*.json .
 mv .release/node_modules .
 
-# Force-add things here
-git add -f action.yml action-types.yml ./dist/src/*.js package.json package-lock.json node_modules
-#rm -rf .release
+# Add everything for release
+git add action.yml action-types.yml ./dist/src/*.js package.json package-lock.json node_modules
+rm -rf .release  # destroy the ark to leave nothing behind.
+
 set +x
 
 echo "Done. Please check 'git diff --cached' to verify changes. If ok, add version tag and push it to remote"
