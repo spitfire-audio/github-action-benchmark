@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -11,18 +15,34 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.extractResult = void 0;
+exports.extractResult = extractResult;
 /* eslint-disable @typescript-eslint/naming-convention */
 const fs_1 = require("fs");
 const github = __importStar(require("@actions/github"));
+const benchmark_result_1 = require("./benchmark_result");
+const node_path_1 = __importDefault(require("node:path"));
+const extract_catch2_1 = __importDefault(require("./extract_catch2"));
 function getHumanReadableUnitValue(seconds) {
     if (seconds < 1.0e-6) {
         return [seconds * 1e9, 'nsec'];
@@ -42,7 +62,7 @@ function getCommitFromPullRequestPayload(pr) {
     const id = pr.head.sha;
     const username = pr.head.user.login;
     const user = {
-        name: username,
+        name: username, // XXX: Fallback, not correct
         username,
     };
     return {
@@ -54,12 +74,13 @@ function getCommitFromPullRequestPayload(pr) {
         url: `${pr.html_url}/commits/${id}`,
     };
 }
-async function getCommitFromGitHubAPIRequest(githubToken) {
-    const octocat = new github.GitHub(githubToken);
-    const { status, data } = await octocat.repos.getCommit({
+async function getCommitFromGitHubAPIRequest(githubToken, ref) {
+    var _a, _b, _c, _d, _e, _f, _g;
+    const octocat = github.getOctokit(githubToken);
+    const { status, data } = await octocat.rest.repos.getCommit({
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
-        ref: github.context.ref,
+        ref: ref !== null && ref !== void 0 ? ref : github.context.ref,
     });
     if (!(status === 200 || status === 304)) {
         throw new Error(`Could not fetch the head commit. Received code: ${status}`);
@@ -67,22 +88,22 @@ async function getCommitFromGitHubAPIRequest(githubToken) {
     const { commit } = data;
     return {
         author: {
-            name: commit.author.name,
-            username: data.author.login,
-            email: commit.author.email,
+            name: (_a = commit.author) === null || _a === void 0 ? void 0 : _a.name,
+            username: (_b = data.author) === null || _b === void 0 ? void 0 : _b.login,
+            email: (_c = commit.author) === null || _c === void 0 ? void 0 : _c.email,
         },
         committer: {
-            name: commit.committer.name,
-            username: data.committer.login,
-            email: commit.committer.email,
+            name: (_d = commit.committer) === null || _d === void 0 ? void 0 : _d.name,
+            username: (_e = data.committer) === null || _e === void 0 ? void 0 : _e.login,
+            email: (_f = commit.committer) === null || _f === void 0 ? void 0 : _f.email,
         },
         id: data.sha,
         message: commit.message,
-        timestamp: commit.author.date,
+        timestamp: (_g = commit.author) === null || _g === void 0 ? void 0 : _g.date,
         url: data.html_url,
     };
 }
-async function getCommit(githubToken) {
+async function getCommit(githubToken, ref) {
     if (github.context.payload.head_commit) {
         return github.context.payload.head_commit;
     }
@@ -93,14 +114,12 @@ async function getCommit(githubToken) {
     if (!githubToken) {
         throw new Error(`No commit information is found in payload: ${JSON.stringify(github.context.payload, null, 2)}. Also, no 'github-token' provided, could not fallback to GitHub API Request.`);
     }
-    return getCommitFromGitHubAPIRequest(githubToken);
+    return getCommitFromGitHubAPIRequest(githubToken, ref);
 }
 function extractCargoResult(output) {
     const lines = output.split(/\r?\n/g);
     const ret = [];
-    // Example:
-    //   test bench_fib_20 ... bench:      37,174 ns/iter (+/- 7,527)
-    const reExtract = /^test (.+)\s+\.\.\. bench:\s+([0-9,]+) ns\/iter \(\+\/- ([0-9,]+)\)$/;
+    const reExtract = /^test (.+)\s+\.\.\. bench:\s+([0-9,.]+) (\w+\/\w+) \(\+\/- ([0-9,.]+)\)$/;
     const reComma = /,/g;
     for (const line of lines) {
         const m = line.match(reExtract);
@@ -108,13 +127,14 @@ function extractCargoResult(output) {
             continue;
         }
         const name = m[1].trim();
-        const value = parseInt(m[2].replace(reComma, ''), 10);
-        const range = m[3].replace(reComma, '');
+        const value = parseFloat(m[2].replace(reComma, ''));
+        const unit = m[3].trim();
+        const range = m[4].replace(reComma, '');
         ret.push({
             name,
             value,
             range: `± ${range}`,
-            unit: 'ns/iter',
+            unit: unit,
         });
     }
     return ret;
@@ -125,22 +145,41 @@ function extractGoResult(output) {
     // Example:
     //   BenchmarkFib20-8           30000             41653 ns/op
     //   BenchmarkDoWithConfigurer1-8            30000000                42.3 ns/op
-    const reExtract = /^(Benchmark\w+(?:\/?[\w()$%^&*-]*?)*?)(-\d+)?\s+(\d+)\s+([0-9.]+)\s+(.+)$/;
+    // Example if someone has used the ReportMetric function to add additional metrics to each benchmark:
+    // BenchmarkThing-16    	       1	95258906556 ns/op	        64.02 UnitsForMeasure2	        31.13 UnitsForMeasure3
+    // reference, "Proposal: Go Benchmark Data Format": https://go.googlesource.com/proposal/+/master/design/14313-benchmark-format.md
+    // "A benchmark result line has the general form: <name> <iterations> <value> <unit> [<value> <unit>...]"
+    // "The fields are separated by runs of space characters (as defined by unicode.IsSpace), so the line can be parsed with strings.Fields. The line must have an even number of fields, and at least four."
+    const reExtract = /^(?<name>Benchmark\w+[\w()$%^&*-=|,[\]{}"#]*?)(?<procs>-\d+)?\s+(?<times>\d+)\s+(?<remainder>.+)$/;
     for (const line of lines) {
         const m = line.match(reExtract);
-        if (m === null) {
-            continue;
+        if (m === null || m === void 0 ? void 0 : m.groups) {
+            const procs = m.groups.procs !== undefined ? m.groups.procs.slice(1) : null;
+            const times = m.groups.times;
+            const remainder = m.groups.remainder;
+            const pieces = remainder.split(/[ \t]+/);
+            // This is done for backwards compatibility with Go benchmarks that had multiple metrics in output,
+            // but they were not extracted properly before v1.18.0
+            if (pieces.length > 2) {
+                pieces.unshift(pieces[0], remainder.slice(remainder.indexOf(pieces[1])));
+            }
+            for (let i = 0; i < pieces.length; i = i + 2) {
+                let extra = `${times} times`.replace(/\s\s+/g, ' ');
+                if (procs !== null) {
+                    extra += `\n${procs} procs`;
+                }
+                const value = parseFloat(pieces[i]);
+                const unit = pieces[i + 1];
+                let name;
+                if (i > 0) {
+                    name = m.groups.name + ' - ' + unit;
+                }
+                else {
+                    name = m.groups.name;
+                }
+                ret.push({ name, value, unit, extra });
+            }
         }
-        const name = m[1];
-        const procs = m[2] !== undefined ? m[2].slice(1) : null;
-        const times = m[3];
-        const value = parseFloat(m[4]);
-        const unit = m[5];
-        let extra = `${times} times`;
-        if (procs !== null) {
-            extra += `\n${procs} procs`;
-        }
-        ret.push({ name, value, unit, extra });
     }
     return ret;
 }
@@ -205,93 +244,6 @@ function extractGoogleCppResult(output) {
         return { name, value, unit, extra };
     });
 }
-function extractCatch2Result(output) {
-    // Example:
-    // benchmark name samples       iterations    estimated <-- Start benchmark section
-    //                mean          low mean      high mean <-- Ignored
-    //                std dev       low std dev   high std dev <-- Ignored
-    // ----------------------------------------------------- <-- Ignored
-    // Fibonacci 20   100           2             8.4318 ms <-- Start actual benchmark
-    //                43.186 us     41.402 us     46.246 us <-- Actual benchmark data
-    //                11.719 us      7.847 us     17.747 us <-- Ignored
-    const reTestCaseStart = /^benchmark name +samples +iterations +estimated/;
-    const reBenchmarkStart = /(\d+) +(\d+) +(?:\d+(\.\d+)?) (?:ns|ms|us|s)\s*$/;
-    const reBenchmarkValues = /^ +(\d+(?:\.\d+)?) (ns|us|ms|s) +(?:\d+(?:\.\d+)?) (?:ns|us|ms|s) +(?:\d+(?:\.\d+)?) (?:ns|us|ms|s)/;
-    const reEmptyLine = /^\s*$/;
-    const reSeparator = /^-+$/;
-    const lines = output.split(/\r?\n/g);
-    lines.reverse();
-    let lnum = 0;
-    function nextLine() {
-        var _a;
-        return [(_a = lines.pop()) !== null && _a !== void 0 ? _a : null, ++lnum];
-    }
-    function extractBench() {
-        const startLine = nextLine()[0];
-        if (startLine === null) {
-            return null;
-        }
-        const start = startLine.match(reBenchmarkStart);
-        if (start === null) {
-            return null; // No more benchmark found. Go to next benchmark suite
-        }
-        const extra = `${start[1]} samples\n${start[2]} iterations`;
-        const name = startLine.slice(0, start.index).trim();
-        const [meanLine, meanLineNum] = nextLine();
-        const mean = meanLine === null || meanLine === void 0 ? void 0 : meanLine.match(reBenchmarkValues);
-        if (!mean) {
-            throw new Error(`Mean values cannot be retrieved for benchmark '${name}' on parsing input '${meanLine !== null && meanLine !== void 0 ? meanLine : 'EOF'}' at line ${meanLineNum}`);
-        }
-        const value = parseFloat(mean[1]);
-        const unit = mean[2];
-        const [stdDevLine, stdDevLineNum] = nextLine();
-        const stdDev = stdDevLine === null || stdDevLine === void 0 ? void 0 : stdDevLine.match(reBenchmarkValues);
-        if (!stdDev) {
-            throw new Error(`Std-dev values cannot be retrieved for benchmark '${name}' on parsing '${stdDevLine !== null && stdDevLine !== void 0 ? stdDevLine : 'EOF'}' at line ${stdDevLineNum}`);
-        }
-        const range = '± ' + stdDev[1].trim();
-        // Skip empty line
-        const [emptyLine, emptyLineNum] = nextLine();
-        if (emptyLine === null || !reEmptyLine.test(emptyLine)) {
-            throw new Error(`Empty line is not following after 'std dev' line of benchmark '${name}' at line ${emptyLineNum}`);
-        }
-        return { name, value, range, unit, extra };
-    }
-    const ret = [];
-    while (lines.length > 0) {
-        // Search header of benchmark section
-        const line = nextLine()[0];
-        if (line === null) {
-            break; // All lines were eaten
-        }
-        if (!reTestCaseStart.test(line)) {
-            continue;
-        }
-        // Eat until a separator line appears
-        for (;;) {
-            const [line, num] = nextLine();
-            if (line === null) {
-                throw new Error(`Separator '------' does not appear after benchmark suite at line ${num}`);
-            }
-            if (reSeparator.test(line)) {
-                break;
-            }
-        }
-        let benchFound = false;
-        for (;;) {
-            const res = extractBench();
-            if (res === null) {
-                break;
-            }
-            ret.push(res);
-            benchFound = true;
-        }
-        if (!benchFound) {
-            throw new Error(`No benchmark found for bench suite. Possibly mangled output from Catch2:\n\n${output}`);
-        }
-    }
-    return ret;
-}
 function extractJuliaBenchmarkHelper([_, bench], labels = []) {
     const res = [];
     for (const key in bench.data) {
@@ -343,8 +295,9 @@ function extractJmhResult(output) {
         const name = b.benchmark;
         const value = b.primaryMetric.score;
         const unit = b.primaryMetric.scoreUnit;
+        const params = b.params ? ' ( ' + JSON.stringify(b.params) + ' )' : '';
         const extra = `iterations: ${b.measurementIterations}\nforks: ${b.forks}\nthreads: ${b.threads}`;
-        return { name, value, unit, extra };
+        return { name: name + params, value, unit, extra };
     });
 }
 function extractBenchmarkDotnetResult(output) {
@@ -365,19 +318,16 @@ function extractBenchmarkDotnetResult(output) {
 }
 function extractCustomBenchmarkResult(output) {
     try {
-        const json = JSON.parse(output);
-        return json.map(({ name, value, unit, range, extra }) => {
-            return { name, value, unit, range, extra };
-        });
+        return benchmark_result_1.BenchmarkResults.parse(JSON.parse(output));
     }
     catch (err) {
-        throw new Error(`Output file for 'custom-(bigger|smaller)-is-better' must be JSON file containing an array of entries in BenchmarkResult format: ${err.message}`);
+        const errMessage = err instanceof Error ? err.message : String(err);
+        throw new Error(`Output file for 'custom-(bigger|smaller)-is-better' must be JSON file containing an array of entries in BenchmarkResult format: ${errMessage}`);
     }
 }
 function extractLuauBenchmarkResult(output) {
     const lines = output.split(/\n/);
     const results = [];
-    output;
     for (const line of lines) {
         if (!line.startsWith('SUCCESS'))
             continue;
@@ -394,7 +344,7 @@ function extractLuauBenchmarkResult(output) {
 }
 async function extractResult(config) {
     const output = await fs_1.promises.readFile(config.outputFilePath, 'utf8');
-    const { tool, githubToken } = config;
+    const { tool, githubToken, ref } = config;
     let benches;
     switch (tool) {
         case 'cargo':
@@ -413,11 +363,10 @@ async function extractResult(config) {
             benches = extractGoogleCppResult(output);
             break;
         case 'catch2':
-            benches = extractCatch2Result(output);
+            benches = (0, extract_catch2_1.default)(output, node_path_1.default.parse(config.outputFilePath).ext);
             break;
         case 'julia':
             benches = extractJuliaBenchmarkResult(output);
-            break;
             break;
         case 'jmh':
             benches = extractJmhResult(output);
@@ -440,7 +389,7 @@ async function extractResult(config) {
     if (benches.length === 0) {
         throw new Error(`No benchmark result was found in ${config.outputFilePath}. Benchmark output was '${output}'`);
     }
-    const commit = await getCommit(githubToken);
+    const commit = await getCommit(githubToken, ref);
     return {
         commit,
         date: Date.now(),
@@ -448,5 +397,4 @@ async function extractResult(config) {
         benches,
     };
 }
-exports.extractResult = extractResult;
 //# sourceMappingURL=extract.js.map
