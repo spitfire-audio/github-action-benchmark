@@ -292,6 +292,279 @@ exports[`extractResult() extracts benchmark output from cargo - criterion_output
 }
 `;
 
+exports[`extractResult() extracts benchmark output from catch2 - benchmark_results.xml 1`] = `
+{
+  "benches": [
+    {
+      "extra": "100 samples
+17 iterations",
+      "name": "Test Case: Arithmetic Performance — Benchmark: Scalar addition",
+      "range": "± 49.2626",
+      "unit": "ns",
+      "value": 796.98,
+    },
+    {
+      "extra": "100 samples
+38 iterations",
+      "name": "Test Case: Arithmetic Performance — Benchmark: SIMD addition",
+      "range": "± 12.8385",
+      "unit": "ns",
+      "value": 347.903,
+    },
+    {
+      "extra": "100 samples
+17 iterations",
+      "name": "Test Case: Arithmetic Performance — Benchmark: Scalar De-interleave",
+      "range": "± 139.609",
+      "unit": "ns",
+      "value": 885.215,
+    },
+    {
+      "extra": "100 samples
+32 iterations",
+      "name": "Test Case: Arithmetic Performance — Benchmark: Scalar Interleave",
+      "range": "± 16.0851",
+      "unit": "ns",
+      "value": 413.068,
+    },
+    {
+      "extra": "100 samples
+22 iterations",
+      "name": "Test Case: Arithmetic Performance — Benchmark: Scalar De-interleave Accumulate",
+      "range": "± 50.5342",
+      "unit": "ns",
+      "value": 581.757,
+    },
+    {
+      "extra": "100 samples
+24 iterations",
+      "name": "Test Case: Arithmetic Performance — Benchmark: Scalar Interleave Accumulate",
+      "range": "± 11.2403",
+      "unit": "ns",
+      "value": 583.901,
+    },
+    {
+      "extra": "100 samples
+64 iterations",
+      "name": "Test Case: Arithmetic Performance — Benchmark: SIMD De-interleave",
+      "range": "± 21.7946",
+      "unit": "ns",
+      "value": 214.25,
+    },
+    {
+      "extra": "100 samples
+58 iterations",
+      "name": "Test Case: Arithmetic Performance — Benchmark: SIMD Interleave",
+      "range": "± 35.1114",
+      "unit": "ns",
+      "value": 385.501,
+    },
+    {
+      "extra": "100 samples
+56 iterations",
+      "name": "Test Case: Arithmetic Performance — Benchmark: SIMD De-interleave Accumulate",
+      "range": "± 11.6337",
+      "unit": "ns",
+      "value": 234.672,
+    },
+    {
+      "extra": "100 samples
+50 iterations",
+      "name": "Test Case: Arithmetic Performance — Benchmark: SIMD Interleave Accumulate",
+      "range": "± 11.6039",
+      "unit": "ns",
+      "value": 267.823,
+    },
+    {
+      "extra": "100 samples
+47 iterations",
+      "name": "Test Case: Arithmetic Performance — Benchmark: Scalar LR>SM (swapped MS)",
+      "range": "± 10.6175",
+      "unit": "ns",
+      "value": 281.832,
+    },
+    {
+      "extra": "100 samples
+31 iterations",
+      "name": "Test Case: Arithmetic Performance — Benchmark: SIMD LR>SM (swapped MS)",
+      "range": "± 18.9874",
+      "unit": "ns",
+      "value": 437.107,
+    },
+    {
+      "extra": "100 samples
+19 iterations",
+      "name": "Test Case: Arithmetic Performance — Benchmark: SIMD LR>SM (swapped MS) swap all first",
+      "range": "± 89.5018",
+      "unit": "ns",
+      "value": 1179.8,
+    },
+    {
+      "extra": "100 samples
+9 iterations",
+      "name": "Test Case: Arithmetic Performance — Benchmark: std::exp<double>(x)",
+      "range": "± 48.0865",
+      "unit": "ns",
+      "value": 1520.41,
+    },
+    {
+      "extra": "100 samples
+20 iterations",
+      "name": "Test Case: Arithmetic Performance — Benchmark: exp<double,6>(x)",
+      "range": "± 49.2443",
+      "unit": "ns",
+      "value": 668.041,
+    },
+    {
+      "extra": "100 samples
+20 iterations",
+      "name": "Test Case: Arithmetic Performance — Benchmark: exp<double,7>(x)",
+      "range": "± 57.0058",
+      "unit": "ns",
+      "value": 687.305,
+    },
+    {
+      "extra": "100 samples
+19 iterations",
+      "name": "Test Case: Arithmetic Performance — Benchmark: exp<double,8>(x)",
+      "range": "± 47.0196",
+      "unit": "ns",
+      "value": 726.309,
+    },
+    {
+      "extra": "100 samples
+18 iterations",
+      "name": "Test Case: Arithmetic Performance — Benchmark: exp<double,9>(x)",
+      "range": "± 31.2252",
+      "unit": "ns",
+      "value": 760.041,
+    },
+    {
+      "extra": "100 samples
+1 iterations",
+      "name": "Test Case: FastDirectoryIterator - performance — Benchmark: JUCE",
+      "range": "± 1.57601e+06",
+      "unit": "ns",
+      "value": 38884700,
+    },
+    {
+      "extra": "100 samples
+1 iterations",
+      "name": "Test Case: FastDirectoryIterator - performance — Benchmark: Merlin",
+      "range": "± 56716.5",
+      "unit": "ns",
+      "value": 4548510,
+    },
+    {
+      "extra": "100 samples
+9 iterations",
+      "name": "Test Case: Modulation Performance — Benchmark: Compile medium complexity arithmetic and optimise (MES)",
+      "range": "± 386.984",
+      "unit": "ns",
+      "value": 1538.97,
+    },
+    {
+      "extra": "100 samples
+16 iterations",
+      "name": "Test Case: Modulation Performance — Benchmark: Compile medium complexity arithmetic no optimisation (MES)",
+      "range": "± 87.0848",
+      "unit": "ns",
+      "value": 862.028,
+    },
+    {
+      "extra": "100 samples
+919 iterations",
+      "name": "Test Case: Modulation Performance — Benchmark: Execute medium complexity arithmetic with optimisation (MES)",
+      "range": "± 0.442008",
+      "unit": "ns",
+      "value": 14.4931,
+    },
+    {
+      "extra": "100 samples
+268 iterations",
+      "name": "Test Case: Modulation Performance — Benchmark: Execute medium complexity arithmetic without optimisation (MES)",
+      "range": "± 2.24854",
+      "unit": "ns",
+      "value": 48.7199,
+    },
+    {
+      "extra": "100 samples
+1 iterations",
+      "name": "Test Case: Modulation Performance — Benchmark: Compile medium complexity arithmetic function (JUCE js) new JS engine each iter",
+      "range": "± 16295.5",
+      "unit": "ns",
+      "value": 121675,
+    },
+    {
+      "extra": "100 samples
+1 iterations",
+      "name": "Test Case: Modulation Performance — Benchmark: Compile and execute medium complexity arithmetic function (JUCE js) new JS engine each iter",
+      "range": "± 4180.05",
+      "unit": "ns",
+      "value": 125162,
+    },
+    {
+      "extra": "100 samples
+1 iterations",
+      "name": "Test Case: Modulation Performance — Benchmark: Evaluate medium complexity arithmetic expression (JUCE js) new JS engine each iter",
+      "range": "± 11156.5",
+      "unit": "ns",
+      "value": 123782,
+    },
+    {
+      "extra": "100 samples
+5 iterations",
+      "name": "Test Case: Modulation Performance — Benchmark: Compile medium complexity arithmetic function (JUCE js) reuse JS engine each iter",
+      "range": "± 499.017",
+      "unit": "ns",
+      "value": 3369.48,
+    },
+    {
+      "extra": "100 samples
+37 iterations",
+      "name": "Test Case: Modulation Performance — Benchmark: Call medium complexity arithmetic function (JUCE js) reuse JS engine each iter",
+      "range": "± 24.2807",
+      "unit": "ns",
+      "value": 363.611,
+    },
+    {
+      "extra": "100 samples
+7 iterations",
+      "name": "Test Case: Modulation Performance — Benchmark: Evaluate medium complexity arithmetic expression (JUCE js) reuse JS engine each iter",
+      "range": "± 505.519",
+      "unit": "ns",
+      "value": 1913.49,
+    },
+    {
+      "extra": "100 samples
+1 iterations",
+      "name": "Test Case: Modulation Performance — Benchmark: JS Parsing",
+      "range": "± 11145.8",
+      "unit": "ns",
+      "value": 39409.5,
+    },
+    {
+      "extra": "100 samples
+1 iterations",
+      "name": "Test Case: Modulation Performance — Benchmark: JSON Parsing",
+      "range": "± 3480.58",
+      "unit": "ns",
+      "value": 26182.5,
+    },
+  ],
+  "commit": {
+    "author": null,
+    "committer": null,
+    "id": "123456789abcdef",
+    "message": "this is dummy",
+    "timestamp": "dummy timestamp",
+    "url": "https://github.com/dummy/repo",
+  },
+  "date": 1712131503296,
+  "tool": "catch2",
+}
+`;
+
 exports[`extractResult() extracts benchmark output from catch2 - catch2_output.xml 1`] = `
 {
   "benches": [
