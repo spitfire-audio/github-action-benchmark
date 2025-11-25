@@ -44,8 +44,8 @@ If something is unclear for you, please ask me questions by creating a new issue
 
 
 ## How to create a new release
-
-1. Run `$ bash scripts/prepare-release.sh v1`
+1. Commit and PR your changes.
+2. Run `$ bash scripts/prepare-release.sh splice-v1`
 2. Check changes with `git diff --cached`
 3. If ok, create a new commit and tag it with `v1.x.y`
-4. Push the tag and commit to `v1` remote repository and make a new release on GitHub
+4. Push the tag and commit to `splice-v1` remote repository and make a new release on GitHub

@@ -292,6 +292,31 @@ exports[`extractResult() extracts benchmark output from cargo - criterion_output
 }
 `;
 
+exports[`extractResult() extracts benchmark output from catch2 - catch2_output.xml 1`] = `
+{
+  "benches": [
+    {
+      "extra": "100 samples
+1 iterations",
+      "name": "Test Case: Fibonacci — Benchmark: Fibonacci 20",
+      "range": "± 123377",
+      "unit": "ns",
+      "value": 2567620,
+    },
+  ],
+  "commit": {
+    "author": null,
+    "committer": null,
+    "id": "123456789abcdef",
+    "message": "this is dummy",
+    "timestamp": "dummy timestamp",
+    "url": "https://github.com/dummy/repo",
+  },
+  "date": 1712131503296,
+  "tool": "catch2",
+}
+`;
+
 exports[`extractResult() extracts benchmark output from catch2 - catch2_output_v2.txt 1`] = `
 {
   "benches": [
